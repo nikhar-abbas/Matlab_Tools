@@ -4,9 +4,9 @@ function Pre_FastMod(filename, params, values)
 %
 % Inputs: filename - the input file to be modified
 %         params - a cell array of the file parameters to be modified
-%         values - a cell array of values to be changed, corresponding to
-%                  the parameters indicated in the params input. Be sure to
-%                  input numerical values as a double, not a string
+%         values - a cell array of final values corresponding to the 
+%                  parameters indicated in the params input. Be sure to
+%                  input numerical values as a double, not a string!
 %
 %
 % Nikhar Abbas - February 2019
@@ -24,6 +24,9 @@ end
 
 %% Load File into cell array
 fid = fopen(filename,'r');
+if fid == -1
+    error('Unable to load input file to Pre_FastMod')
+end
 li = 1;
 tline = fgetl(fid);
 while ischar(tline)
@@ -46,7 +49,7 @@ for pind = 1:length(params)
             A = regexprep(A,['[-]?\d*[.]?\d*(\s+)', params{pind}],prepstr);
         end
     else
-        display(['Unable to change ', params{pind}, 'in ', filename])
+        display(['Unable to change ', params{pind}, ' in ', filename])
     end
 end
 

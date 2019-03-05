@@ -1,4 +1,4 @@
-function [Triplets, NTriplets] = findBladeTriplets(rotFrame,Desc )
+function [Triplets, NTriplets] = fx_findBladeTriplets(rotFrame,Desc )
 
 %% Find the number of, and indices for, triplets in the rotating frame:
     chkStr = {'[Bb]lade \d', '[Bb]lade [Rr]oot \d', 'BD_\d', '[Bb]\d', '\d'};

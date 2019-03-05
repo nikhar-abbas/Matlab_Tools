@@ -28,7 +28,7 @@ function [matData, data] = fx_getMats(FileNames)
 %   the displacement states are followed by all the velocity states.
 % - descriptions of inputs, outputs, and (BeamDyn) states are triplets if
 %   they match in all characters except the blade number. (see
-%   findBladeTriplets.m for details)
+%   fx_findBladeTriplets.m for details)
 
 if nargin < 1 || isempty(FileNames)
     FileNames = {'Test18.1.lin','Test18.2.lin'};
@@ -42,7 +42,7 @@ end
 
 % Input data from linearization files:
 matData.NAzimStep       = length(FileNames);
-data(matData.NAzimStep) = ReadFASTLinear(FileNames{matData.NAzimStep}); %we'll read this twice so we can allocate space first; putting it at matData.NAzimStep saves some reallocation later
+data(matData.NAzimStep) = fx_ReadFASTLinear(FileNames{matData.NAzimStep}); %we'll read this twice so we can allocate space first; putting it at matData.NAzimStep saves some reallocation later
 matData.NumStates       = data(matData.NAzimStep).n_x;
 matData.ndof            = data(matData.NAzimStep).n_xx / 2 + data(matData.NAzimStep).n_x - data(matData.NAzimStep).n_xx; %new calc for dof
 matData.n_xx            = data(matData.NAzimStep).n_xx; %number of second order states; consider deleting 12/17/18
@@ -118,7 +118,7 @@ end
 
 for iFile = 1:matData.NAzimStep
 
-    data(iFile) = ReadFASTLinear(FileNames{iFile}); %   data(iFile) = ReadFASTLinear(FileNames{iFile});
+    data(iFile) = fx_ReadFASTLinear(FileNames{iFile}); %   data(iFile) = ReadFASTLinear(FileNames{iFile});
     
     matData.Omega(iFile)   = data(iFile).RotSpeed;
     matData.Azimuth(iFile) = data(iFile).Azimuth*180/pi;
@@ -195,26 +195,26 @@ end
 %% Find the indices for, state triplets in the rotating frame
 %  (note that we avoid the "first time derivative" states)
 if any(x_rotFrame) > 0 && checkEDstates > 0  %%%(matData.NumEDStates_1 > 0)   
-        [matData.RotTripletIndicesStates] = findBladeTriplets_EDstate(x_rotFrame(1:matData.NumEDStates_1),matData.DescStates(1:matData.NumEDStates_1) ); % looks like it includes BD states right now... check this
+        [matData.RotTripletIndicesStates] = fx_findBladeTriplets_EDstate(x_rotFrame(1:matData.NumEDStates_1),matData.DescStates(1:matData.NumEDStates_1) ); % looks like it includes BD states right now... check this
 % %     elseif (checkBDstates)
-% %         [matData.RotTripletIndicesStates] = findBladeTriplets_EDstate(x_rotFrame(1:matData.ndof),matData.DescStates(1:matData.ndof) ); % looks like it includes BD states right now... check this
+% %         [matData.RotTripletIndicesStates] = fx_findBladeTriplets_EDstate(x_rotFrame(1:matData.ndof),matData.DescStates(1:matData.ndof) ); % looks like it includes BD states right now... check this
 else 
-        [matData.RotTripletIndicesStates] = findBladeTriplets(        x_rotFrame(1:matData.NumEDStates_1),matData.DescStates(1:matData.NumEDStates_1) );
+        [matData.RotTripletIndicesStates] = fx_findBladeTriplets(        x_rotFrame(1:matData.NumEDStates_1),matData.DescStates(1:matData.NumEDStates_1) );
 end
 
 %% Find the indices for control input triplets in the rotating frame:
 if (matData.NumInputs > 0)
-    [matData.RotTripletIndicesCntrlInpt] = findBladeTriplets(data(1).u_rotFrame,matData.DescCntrlInpt );
+    [matData.RotTripletIndicesCntrlInpt] = fx_findBladeTriplets(data(1).u_rotFrame,matData.DescCntrlInpt );
 end
 
 %% Find the indices for output measurement triplets in the rotating frame:
 if (matData.NumOutputs > 0 )
-    [matData.RotTripletIndicesOutput] = findBladeTriplets(data(1).y_rotFrame, matData.DescOutput );
+    [matData.RotTripletIndicesOutput] = fx_findBladeTriplets(data(1).y_rotFrame, matData.DescOutput );
 end
     
 % % %% Find the indices for first order only triplets in the rotating frame:% Added by NJ; use for rotating states to make more general, not HD
 % % if ( (matData.NumStates - matData.n_xx) > 0 )
-% %     [matData.RotTripletIndicesFstOrdStates] = findBladeTriplets(x_rotFrame(matData.NumEDStates_1+NumBDStates/2+1:matData.NumEDStates_1+NumBDStates/2+NumHDStates), matData.DescStates (matData.NumEDStates_1+NumBDStates/2+1:matData.NumEDStates_1+NumBDStates/2+NumHDStates));
+% %     [matData.RotTripletIndicesFstOrdStates] = fx_findBladeTriplets(x_rotFrame(matData.NumEDStates_1+NumBDStates/2+1:matData.NumEDStates_1+NumBDStates/2+NumHDStates), matData.DescStates (matData.NumEDStates_1+NumBDStates/2+1:matData.NumEDStates_1+NumBDStates/2+NumHDStates));
 % % end
 
 return;

@@ -120,7 +120,7 @@ end
 
 
 if isfield(matData,'RotTripletIndicesHydroStates') %added by NJ no rotating HD states
-    [n_RotTripletHydroStates,nb] = size(matData.RotTripletIndicesHydroStates);
+    [n_RotTripletHydroStates,nb] = size(matData.RotTripletIndicesHmatydroStates);
     if(nb ~= 3)
         error('**ERROR: the number of column vectors in RotTripletIndicesHydroStates must equal 3, the num of blades');
     end
@@ -287,7 +287,7 @@ end   % end of azimuth loop
 %------------- Eigensolution and Azimuth Averages -------------------------
 if isfield(MBC,'A')
     MBC.AvgA = mean(MBC.A,3); % azimuth-average of azimuth-dependent MBC.A matrices
-     MBC.eigSol = eiganalysis(MBC.AvgA,matData.NumEDStates);
+     MBC.eigSol = fx_eiganalysis(MBC.AvgA,matData.NumEDStates);
 end
 
 if isfield(MBC,'B')

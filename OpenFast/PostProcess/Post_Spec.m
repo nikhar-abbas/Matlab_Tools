@@ -4,10 +4,10 @@ fastout = Post_LoadFastOut('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10
 % 
 
 % data = simout;
-signal = fastout;
-channel = 'TwrBsFyt';
+signal = simout;
+channel = 'GenSpeed';
 % x = data.Wave1Elev;
-x = signal.(channel)(end/4:end);
+x = signal.(channel)(end/2:end);
 % % x = data.TTDspFA;
 % x = data.PtfmPitch; %(1001:end);
 % x = data.GenSpeed;
@@ -30,7 +30,7 @@ freqN = 0:(2*pi)/N:pi;
 
 figure(1000);
 % plot(freq,10*log10(psd))
-semilogx(freq,10*log10(psd))
+loglog(freq,10*log10(psd))
 % plot(freqN/pi,10*log10(psdN))
 hold on
 xlabel('Frequency (Hz)')
@@ -39,6 +39,7 @@ ylabel('Power/Frequency (dB/Hz)')
 figure(1001);
 myplot(signal.Time, signal.(channel))
 hold on
+myplot(signal.Time(end-length(x)+1:end),x)
 %%
 
 % Fs = 1000;

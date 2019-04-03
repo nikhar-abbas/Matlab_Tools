@@ -27,7 +27,9 @@ fig.PaperPosition = [0 0 width height];
 
 % Plot
 if ~any(strcmpi('linewidth',varargin))  % defaults to thicker linewidth, unless otherwise defined
-    p.LineWidth = 1.5;
+    for ip = 1:length(p)
+        p(ip).LineWidth = 1.5;
+    end
 end
 
 % Axis

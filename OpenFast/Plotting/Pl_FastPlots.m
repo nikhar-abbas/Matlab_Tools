@@ -17,9 +17,9 @@ function Pl_FastPlots(varargin)
 % Switches to turn on/off some categories of plots. Cases are defined in
 % the next section
 plsw.MI = 0;                    % MI, Main Inputs
-plsw.DTO = 1;                   % DTO, Drivetrain Outputs     
+plsw.DTO = 0;                   % DTO, Drivetrain Outputs     
 plsw.B1 = 1;                    % B1, Baseline1
-plsw.PD = 0;                    % PD, Primary Dynamics
+plsw.PD = 1;                    % PD, Primary Dynamics
 plsw.RO = 1;                    % RO, Rotor Performance Outputs
 plsw.Fl1 = 0;                   % Fl1, Basic Floating Parameters
 

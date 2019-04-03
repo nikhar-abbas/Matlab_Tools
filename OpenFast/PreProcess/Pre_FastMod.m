@@ -43,7 +43,7 @@ for pind = 1:length(params)
     if any(contains(A,params{pind}))
         if ischar(values{pind})
             prepstr = [values{pind},'$2',params{pind}];
-            A = regexprep(A,['(\w+)(\s*)', params{pind}],prepstr);
+            A = regexprep(A,['\"?(\w+)\"?(\s*)', params{pind}],prepstr);
         elseif isnumeric(values{pind})
             prepstr = [num2str(values{pind}),'$1',params{pind}];
             A = regexprep(A,['[-]?\d*[.]?\d*(\s+)', params{pind}],prepstr);

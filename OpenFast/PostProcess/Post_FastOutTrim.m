@@ -2,7 +2,7 @@ function fastout = Post_FastOutTrim(fastout,t0,t1)
 % This function trims the solution of a fast simulation to the desired
 % time-steps. 
 %
-% Inputs: fastout - structure of FAST data
+% Inputs: fastout - structure of FAST output data
 %         t0      - start time
 %         t1      - end time
 %

@@ -16,7 +16,7 @@
 % Servodyn: Switch all control modes to 0, and VSGenModel=1
 % Aerodyn15: WakeMod=1, AFAeroMod=1, TwrPotent=0
 % InflowWind: WindType=1, PLexp=0
-% Model.fst: TMax = 10; CompElast=1, CompInflow=1, CompAero=2, SompServo=1
+% Model.fst: TMax = 5; CompElast=1, CompInflow=1, CompAero=2, SompServo=1
 %
 % RtAeroCp and RtTSR outputs must be enabled in AeroDyn15
 %
@@ -38,9 +38,9 @@ Out = 'DTU_10MW_RWT.out';
 
 
 %% Simulation setup
-BlPitch = [-2:.5:15];                    % blade pitch angles
+BlPitch = 0; [-2:.5:15];                    % blade pitch angles
 R = 89.2*cos(2.5*pi/180);                   % rotor radius (m)
-lambda = 1:.5:16;                           % tip speed ratios
+lambda = 1:.25:16;                           % tip speed ratios
 v = 10;                                      % wind speed (m/s)
 omega = (lambda*v/R) * (30/pi);             % Rotor speeds (rpm)
 

@@ -21,6 +21,7 @@
 %%
 function [linout, linavg] = Post_GetLinear(Lindir, LinfileBase, nlin)
 
+%% Setup paths
 addpath(Lindir)
 
 %% Load Files
@@ -28,8 +29,9 @@ addpath(Lindir)
 for ind = 1:nlin
     % Load linearization
     linfile = [Lindir filesep LinfileBase '.' num2str(ind) '.lin'];
-    linout(ind) = ReadFASTLinear(linfile);
-    FileNameVec{ind} = [LinfileBase '.' num2str(ind) '.lin'];
+%     linout(ind) = ReadFASTLinear(linfile);
+%     FileNames{ind} = [OutfileBase '.' num2str(ind) '.lin'];
+    FileNames{ind} = linfile;    
 end
 
 
@@ -43,25 +45,49 @@ end
 % that result in equations (29) through (33) of NREL_MBC.pdf (NREL report
 % on MBC
 
+% for ind = 1:nlin
+%     FileNames = FileNameVec(ind);
+%     GetMats_f8;
+%     mbc3;
+%     
+%     if exist('MBC_A')
+%         linout(ind).A_MBC = MBC_A;
+%         linout(ind).B_MBC = MBC_B;
+%         linout(ind).C_MBC = MBC_C;
+%         linout(ind).D_MBC = MBC_D;
+%     else
+%         linout(ind).A_MBC = linout(ind).A;
+%         linout(ind).B_MBC = linout(ind).B;
+%         linout(ind).C_MBC = linout(ind).C;
+%         linout(ind).D_MBC = linout(ind).D;
+%     end
+%     clear MBC_A MBC_B MBC_C MBC_D
+% 
+% end
+
+
+[matData, linout] = fx_getMats(FileNames)
+try
+    [MBC, matData, FAST_linData] = fx_mbc3(FileNames) 
+catch
+    display('There are no rotating states - but this is okay, MBC3 is just kind of silly to do.')
+end
+
 for ind = 1:nlin
-    FileNames = FileNameVec(ind);
-    GetMats_f8;
-    mbc3;
-    
-    if exist('MBC_A')
-        linout(ind).A_MBC = MBC_A;
-        linout(ind).B_MBC = MBC_B;
-        linout(ind).C_MBC = MBC_C;
-        linout(ind).D_MBC = MBC_D;
+    if exist('MBC')
+        linout(ind).A_MBC = MBC.A(:,:,nlin);
+        linout(ind).B_MBC = MBC.B(:,:,nlin);
+        linout(ind).C_MBC = MBC.C(:,:,nlin);
+        linout(ind).D_MBC = MBC.D(:,:,nlin);
     else
         linout(ind).A_MBC = linout(ind).A;
-        linout(ind).B_MBC = linout(ind).B;
+        linout(ind).B_MBC = linout(ind).B(:,1:9);
         linout(ind).C_MBC = linout(ind).C;
-        linout(ind).D_MBC = linout(ind).D;
+        linout(ind).D_MBC = linout(ind).D(:,1:9);
     end
-    clear MBC_A MBC_B MBC_C MBC_D
-
 end
+    
+
 
 %% Some analysis
 

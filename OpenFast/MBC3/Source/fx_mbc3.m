@@ -210,7 +210,7 @@ for iaz = matData.NAzimStep:-1:1
         T1qc = eye(matData.NumHDInputs);                % inverse of T1q
     end
     
-MBC.A = zeros(matData.NumStates); % initalize matrix
+% MBC.A = zeros(matData.NumStates); % initalize matrix
 % mbc transformation of first-order matrices
 %  if ( MBC.EqnsOrder == 1 ) % activate later
 

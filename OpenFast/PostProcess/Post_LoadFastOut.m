@@ -1,12 +1,13 @@
 function fastout = Post_LoadFastOut(FAST_OutFile)
+% Load Model Output from a *.out file
+% Loads OpenFast model output into a MATLAB structure to be post processed
+%
+%
+% Inputs: FAST_OutFile - *.out file from an openfast run
+% Outputs: fastout - data structure containing output data
+%
+% Nikhar Abbas
 
-% Load Model Output
-% Loads FAST8 model output into a MATLAB structure to be post processed
-
-% Open Fast Output File
-% root = 'C:\Users\Nikhar\Documents\Research\TurbineModels\NREL5MW-OC3Spar\00-Base'; %File Location
-% file = 'Model.out'; %File Name
-% FAST_OutFile = [root filesep file];
 fid = fopen(FAST_OutFile, 'r');
 if fid == -1, error('Error loading file'), end
 

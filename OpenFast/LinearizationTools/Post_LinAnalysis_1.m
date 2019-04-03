@@ -27,8 +27,9 @@ addpath(Outdir)
 for ind = 1:nlin
     % Load linearization
     linfile = [Outdir filesep OutfileBase '.' num2str(ind) '.lin'];
-    linout(ind) = ReadFASTLinear(linfile);
-    FileNameVec{ind} = [OutfileBase '.' num2str(ind) '.lin'];
+%     linout(ind) = ReadFASTLinear(linfile);
+%     FileNames{ind} = [OutfileBase '.' num2str(ind) '.lin'];
+    FileNames{ind} = linfile;    
 end
 
 
@@ -42,25 +43,50 @@ end
 % that result in equations (29) through (33) of NREL_MBC.pdf (NREL report
 % on MBC
 
+% for ind = 1:nlin
+%     FileNames = FileNameVec(ind);
+%     GetMats_f8;
+%     mbc3;
+%     
+%     if exist('MBC_A')
+%         linout(ind).A_MBC = MBC_A;
+%         linout(ind).B_MBC = MBC_B;
+%         linout(ind).C_MBC = MBC_C;
+%         linout(ind).D_MBC = MBC_D;
+%     else
+%         linout(ind).A_MBC = linout(ind).A;
+%         linout(ind).B_MBC = linout(ind).B;
+%         linout(ind).C_MBC = linout(ind).C;
+%         linout(ind).D_MBC = linout(ind).D;
+%     end
+%     clear MBC_A MBC_B MBC_C MBC_D
+% 
+% end
+
+
+[matData, linout] = fx_getMats(FileNames)
+try
+    [MBC, matData, FAST_linData] = fx_mbc3(FileNames) 
+catch
+    display('There are no rotating states - but this is okay, MBC3 is just kind of silly to do.')
+end
+
 for ind = 1:nlin
-    FileNames = FileNameVec(ind);
-    GetMats_f8;
-    mbc3;
-    
-    if exist('MBC_A')
-        linout(ind).A_MBC = MBC_A;
-        linout(ind).B_MBC = MBC_B;
-        linout(ind).C_MBC = MBC_C;
-        linout(ind).D_MBC = MBC_D;
+    if exist('MBC')
+        linout(ind).A_MBC = MBC.A(:,:,nlin);
+        linout(ind).B_MBC = MBC.B(:,:,nlin);
+        linout(ind).C_MBC = MBC.C(:,:,nlin);
+        linout(ind).D_MBC = MBC.D(:,:,nlin);
     else
         linout(ind).A_MBC = linout(ind).A;
-        linout(ind).B_MBC = linout(ind).B;
+        linout(ind).B_MBC = linout(ind).B(:,1:9);
         linout(ind).C_MBC = linout(ind).C;
-        linout(ind).D_MBC = linout(ind).D;
+        linout(ind).D_MBC = linout(ind).D(:,1:9);
     end
-    clear MBC_A MBC_B MBC_C MBC_D
-
 end
+    
+
+
 
 %% Some analysis
 
@@ -121,6 +147,10 @@ for ind = 1:nlin
     Nm_chu = find(Nm_u == 1)';
     M_u(Nm_chu) = 1000;
     linout(ind).u_desc(Nm_u) = strrep(linout(ind).u_desc(Nm_u),'Nm','kNm');
+    % Remove HydroDyn Input, if it exists
+    Hd_u = contains(linout(ind).u_desc,'HD');
+    Hd_ru = find(Hd_u == 1)';
+    M_u(Hd_ru) = [];
     % normalize by tower height
 %     twrheight = 115.63;
 %     twr_u = contains(linout(ind).u_desc,', m') + contains(linout(ind).u_desc,'tower');
@@ -212,7 +242,7 @@ for ind = 1:nlin
     linout(ind).eigs = eig(A_MBC);
     
     % Clear vars
-    clear A_MBC B_MBC C_MBC D_MBC M_x M_u 
+%     clear A_MBC B_MBC C_MBC D_MBC M_x M_u 
 
 end
 

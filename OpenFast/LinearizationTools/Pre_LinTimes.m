@@ -12,8 +12,9 @@ function [tvec] = Pre_LinTimes(omega, t0, nlin, nrot)
 %     nrot - number of rotations to linearize over
 % Outputs:
 %     tvec - vector of times for openfast to linearize at
-    
-
+%
+% Nikhar Abbas - January 2019
+%%
 switch nargin
     case 2             % Default to 18 linearization points over 1 rotation
         nlin = 18;
@@ -37,4 +38,3 @@ tvec = t0.*ones(1,length(linmat))+tlinmat;      % Output times to linearize
 end
 
 
-%% Nikhar Abbas

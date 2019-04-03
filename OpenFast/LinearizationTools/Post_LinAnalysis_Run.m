@@ -4,15 +4,17 @@
 
 %% Plot and Save?
 mkplot = 1;
-savepl = 1;
+savepl = 0;
 
 savedir = '/Users/nabbas/Documents/Notes/ResearchNotes/Figures/';
 
 %% Load Linearization data
 
 % define paths
-Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/AboveRated/';
-OutfileBase = 'DTU_10MW_RWT';
+% Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/AboveRated/';
+% OutfileBase = 'DTU_10MW_RWT';
+Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Linearizations/';
+OutfileBase = 'DTU_10MW_NAUTILUS_GoM';
 nlin = 24;
 cnum = 7;
 
@@ -59,7 +61,8 @@ SS_desc_f = SS_desc(zrws);
 
 %% Make your fancy plots
 if mkplot
-    fig(1) = figure(1);
+    fi=4;           % change this to change initial figure
+    fig(1) = figure(fi);
     gh = bar3(abs(contmat));
     view(2)
     for k = 1:length(gh)
@@ -83,7 +86,7 @@ if mkplot
     title('Color Scaled Controllable Directions','FontSize',10,'horizontalAlignment', 'right')
     
     
-    fig(2) = figure(2);
+    fig(2) = figure(fi+1);
     gh = bar3(abs(contmat));
     view(2)
     for k = 1:length(gh)
@@ -105,7 +108,7 @@ if mkplot
     xlabel('Case Number')
     title('Controllable Directions','FontSize',10,'horizontalAlignment', 'right')
     
-    fig(3) = figure(3);
+    fig(3) = figure(fi+2);
     Eplot1 = log10(abs(contmat_E));
     ninf = find(Eplot1==-inf);
     Eplot = abs(Eplot1);

@@ -61,7 +61,7 @@ SS_desc_f = SS_desc(zrws);
 
 %% Make your fancy plots
 if mkplot
-    fi=4;           % change this to change initial figure
+    fi=1;           % change this to change initial figure
     fig(1) = figure(fi);
     gh = bar3(abs(contmat));
     view(2)

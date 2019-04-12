@@ -15,20 +15,11 @@ function [linout, linavg] = Post_LinAnalysis_1(Outdir, OutfileBase, nlin)
 
 %% Setup Paths
 
-% Outdir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/Case7';
-% OutfileBase = 'DTU_10MW_RWT';
-% nlin = 24;
-
-
 addpath(Outdir)
 
-%% Load Files
-% clear linout
+%% Define FileNames
 for ind = 1:nlin
-    % Load linearization
     linfile = [Outdir filesep OutfileBase '.' num2str(ind) '.lin'];
-%     linout(ind) = ReadFASTLinear(linfile);
-%     FileNames{ind} = [OutfileBase '.' num2str(ind) '.lin'];
     FileNames{ind} = linfile;    
 end
 
@@ -42,27 +33,6 @@ end
 % All nonrotating frame state space matrices are found using the methods
 % that result in equations (29) through (33) of NREL_MBC.pdf (NREL report
 % on MBC
-
-% for ind = 1:nlin
-%     FileNames = FileNameVec(ind);
-%     GetMats_f8;
-%     mbc3;
-%     
-%     if exist('MBC_A')
-%         linout(ind).A_MBC = MBC_A;
-%         linout(ind).B_MBC = MBC_B;
-%         linout(ind).C_MBC = MBC_C;
-%         linout(ind).D_MBC = MBC_D;
-%     else
-%         linout(ind).A_MBC = linout(ind).A;
-%         linout(ind).B_MBC = linout(ind).B;
-%         linout(ind).C_MBC = linout(ind).C;
-%         linout(ind).D_MBC = linout(ind).D;
-%     end
-%     clear MBC_A MBC_B MBC_C MBC_D
-% 
-% end
-
 
 [matData, linout] = fx_getMats(FileNames)
 try
@@ -252,21 +222,25 @@ end
 % end
 %% Some averaging analysis - CLEAN THIS UP AND SEPARATE IT INTO OTHER FUNCTIONS
 
-Asum = [zeros(size(linout(1).A_MBC_rm))];
-Bsum = [zeros(size(linout(1).B_MBC_rm))];
-Csum = [zeros(size(linout(1).C_MBC_rm))];
-Dsum = [zeros(size(linout(1).D_MBC_rm))];
-for ind = 1:nlin
-   Asum = Asum + linout(ind).A_MBC_rm;
-   Bsum = Bsum + linout(ind).B_MBC_rm;
-   Csum = Csum + linout(ind).C_MBC_rm;
-   Dsum = Dsum + linout(ind).D_MBC_rm;
-end
-
-linavg.A = Asum./nlin;
-linavg.B = Bsum./nlin;
-linavg.C = Csum./nlin;
-linavg.D = Dsum./nlin;
+% Asum = [zeros(size(linout(1).A_MBC_rm))];
+% Bsum = [zeros(size(linout(1).B_MBC_rm))];
+% Csum = [zeros(size(linout(1).C_MBC_rm))];
+% Dsum = [zeros(size(linout(1).D_MBC_rm))];
+% for ind = 1:nlin
+%    Asum = Asum + linout(ind).A_MBC_rm;
+%    Bsum = Bsum + linout(ind).B_MBC_rm;
+%    Csum = Csum + linout(ind).C_MBC_rm;
+%    Dsum = Dsum + linout(ind).D_MBC_rm;
+% end
+% 
+% linavg.A = Asum./nlin;
+% linavg.B = Bsum./nlin;
+% linavg.C = Csum./nlin;
+% linavg.D = Dsum./nlin;
+linavg.A = linout.A_MBC_rm;
+linavg.B = linout.B_MBC_rm;
+linavg.C = linout.C_MBC_rm;
+linavg.D = linout.D_MBC_rm;
 
 sys_avg = ss(linavg.A,linavg.B,linavg.C,linavg.D);
 linavg.x_desc = linout(1).x_desc_rm;

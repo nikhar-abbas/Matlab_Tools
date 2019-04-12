@@ -46,14 +46,14 @@
 % Nikhar Abbas - February 2019
 
 %% Some Initialization Housekeeping
-LinFolder = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/BelowRated';
-BaseFile = 'DTU_10MW_RWT';
+LinFolder = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Linearizations/Fl_PitchSurge';
+BaseFile = 'DTU_10MW_NAUTILUS_GoM';
 
 % Number of cases
 cnum = 8;       
 
 % Floating?
-floating = 0;
+floating = 1;
 
 %% Define DOF options:
 DOFopt = {'FlapDOF1',... 
@@ -102,7 +102,7 @@ cases.c8.wind = 14;
 cases.c8.dof = {'GenDOF', 'TwFADOF1', 'YawDOF', 'DrTrDOF', 'TwSSDOF1', 'FlapDOF1', 'EdgeDOF', 'FlapDOF1', 'FlapDOF2', 'TwFADOF2', 'TwSSDOF2'};
 
 % Add Floating Cases
-fcases = {'PtfmPDOF'};
+fcases = {'PtfmPDOF','PtfmSgDOF'};
 if floating
     for ci = 1:cnum
         cases.(['c',num2str(ci)]).dof = [cases.(['c',num2str(ci)]).dof, fcases];

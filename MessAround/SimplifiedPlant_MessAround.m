@@ -49,7 +49,7 @@ Cp = interp1(TSRvec,Cpvec,tsr);
 dCpdTSR = interp1(dTSR,dCp,tsr);
 
 % . ---  controller tuning ---
-dtdl = 1/(2)*rho*Ar*R^2*v*(1/tsr^2)* (dCpdTSR*tsr - Cp); % assume operating at optimal
+dtdl = 1/(2)*rho*Ar*R*v^2*(1/tsr^2)* (dCpdTSR*tsr - Cp); % assume operating at optimal
 dldo = R/v;
 dtdo = dtdl*dldo;
 
@@ -89,9 +89,8 @@ step(sys)
 
 %% Possible Poles
 
+om0 = tsr*v/R
+dtgdo = 1/(2*J)*rho*Ar*R^3*50^-1 * (dCpdTSR*tsr^-3 * om0^2 - 3*Cp*tsr^-4*om0^2 + 2*Cp*tsr^-3*om0)
 
-Bp = -3.123e-07;
-Ap = 0.03791;
-plant = zpk( (Bp*(Kp*s + Ki))/(s^2 + (Ap + Kp*Bp)*s + Bp*Ki) )
 
 

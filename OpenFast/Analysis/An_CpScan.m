@@ -16,7 +16,7 @@
 % Servodyn: Switch all control modes to 0, and VSGenModel=1
 % Aerodyn15: WakeMod=1, AFAeroMod=1, TwrPotent=0
 % InflowWind: WindType=1, PLexp=0
-% Model.fst: TMax = 5; CompElast=1, CompInflow=1, CompAero=2, SompServo=1
+% Model.fst: TMax = 5; CompElast=1, CompInflow=1, CompAero=2, CompServo=1
 %
 % RtAeroCp and RtTSR outputs must be enabled in AeroDyn15
 %
@@ -25,24 +25,24 @@
 % Nikhar Abbas - February 2019
 
 %% Model Directory and Filenames
-ModDir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan';
+ModDir = '/Users/nabbas/Documents/TurbineModels/NREL_5MW/CpScan';
 
 % Important Parameter Files (In relation to ModDir)
-Servo = 'DTU_10MW_ServoDyn.dat';
-Elasto = 'DTU_10MW_RWT_ElastoDyn.Dat';
-Inflow = 'DTU_10MW_InflowWind.dat';
-Aero = '../Rotor/DTU_10MW_RWT_AeroDyn15.dat';
-Init = 'DTU_10MW_RWT.fst';
-Out = 'DTU_10MW_RWT.out';
+Servo = 'NRELBsline5MW_Onshore_ServoDyn.dat';
+Elasto = 'NRELBsline5MW_Onshore_ElastoDyn.dat';
+Inflow = 'NRELOffshrBsline5MW_InflowWind.dat';
+Aero = 'NRELBsline5MW_Onshore_AeroDyn15.dat';
+Init = '5MW_Land_CpScan.fst';
+Out = '5MW_Land_CpScan.out';
 
 
 
 %% Simulation setup
-BlPitch = 0; [-2:.5:15];                    % blade pitch angles
-R = 89.2*cos(2.5*pi/180);                   % rotor radius (m)
+BlPitch = [-2:.5:15];                     % blade pitch angles
+R = 63*cos(2.5*pi/180);                      % rotor radius (m)
 lambda = 1:.25:16;                           % tip speed ratios
 v = 10;                                      % wind speed (m/s)
-omega = (lambda*v/R) * (30/pi);             % Rotor speeds (rpm)
+omega = (lambda*v/R) * (30/pi);              % Rotor speeds (rpm)
 
 
 Pre_FastMod([ModDir filesep Inflow],{'HWindSpeed'},{v})
@@ -54,7 +54,7 @@ for i = 1:length(BlPitch)
         Pre_FastMod([ModDir filesep Elasto],{'BlPitch','RotSpeed'},{BlPitch(i),omega(j)})       
         
         % Run simulation - note, this may need to be changed depending on OS and user-specific openfast configuration
-        system(['openfast ', ModDir, filesep, Init])
+        system(['openfast_dev ', ModDir, filesep, Init])
         
         % Load FAST output Data
         fastout = Post_LoadFastOut([ModDir filesep Out]);

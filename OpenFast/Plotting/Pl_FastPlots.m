@@ -1,6 +1,6 @@
 function Pl_FastPlots(varargin)
 % This function plots outputs from openfast simulations. There is an
-% attempt at organization to organize the created plots into some sort of
+% attempt to organize the created plots into some sort of
 % categories. 
 %
 % Inputs: varargin - Some number of structures, should be created from
@@ -20,8 +20,9 @@ plsw.MI = 0;                    % MI, Main Inputs
 plsw.DTO = 0;                   % DTO, Drivetrain Outputs     
 plsw.B1 = 1;                    % B1, Baseline1
 plsw.PD = 1;                    % PD, Primary Dynamics
-plsw.RO = 1;                    % RO, Rotor Performance Outputs
+plsw.RO = 0;                    % RO, Rotor Performance Outputs
 plsw.Fl1 = 0;                   % Fl1, Basic Floating Parameters
+plsw.Twr = 0;
 
 cases = fieldnames(plsw);
 
@@ -33,7 +34,7 @@ pc.B1 = {'Wind1VelX', 'BldPitch1', 'GenTq', 'RotSpeed', 'GenPwr'};
 pc.PD = {'GenSpeed', 'GenTq', 'BldPitch1'};
 pc.RO = {'RtTSR','RtAeroCp'};
 pc.Fl1 = {'PtfmPitch', 'BldPitch1'};
-
+pc.Twr = {'GenTq','BldPitch1','RotSpeed', 'TwrBsFxt'};
 
 
 %% load outdata to be plotted

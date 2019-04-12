@@ -4,8 +4,8 @@ fastout = Post_LoadFastOut('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10
 % 
 
 % data = simout;
-signal = simout;
-channel = 'GenSpeed';
+signal = fo_sim;
+channel = 'GenTq';
 % x = data.Wave1Elev;
 x = signal.(channel)(end/2:end);
 % % x = data.TTDspFA;

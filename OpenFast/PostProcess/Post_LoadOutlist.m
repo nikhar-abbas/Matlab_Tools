@@ -1,16 +1,23 @@
-function Outlist = Post_LoadOutlist(FAST_OutFile)
+function Outlist = Post_LoadOutlist(FAST_OutFile, varargin)
 % Load Model OutList from an *.out file. 
-% Loads OpenFast model output into a MATLAB structure to be post processed
+% Loads OpenFast model output into a MATLAB structure to be used for
+% whatever purposes you may desire.
 %
 % Inputs: FAST_OutFile - *.out file from an openfast run
 % Outputs: OutList - Cell Array containing names of openfast output
 %                    channels
+%          varargin - a cell array of variables that you would like to have
+%                     in the outlist. If they are not available, a quick 
+%                     openfast run will be initiated to try to get them.
 %
 % Nikhar Abbas
 
 
 fid = fopen(FAST_OutFile, 'r');
-if fid == -1, error('Error loading file'), end
+if fid == -1, error('Error loading file'), 
+
+
+end
 
 % Define Headers
 n_rec = 0;                              % record keeper to keep while loop running until the header line has been found    

@@ -23,6 +23,10 @@
 %        below). Then define non-floating DOF options. If floating is
 %        enabled, the desired floating degrees of freedom will be appended
 %        to the fixed bottom cases. 
+%        *****
+%        Make sure cpath is properly defined to point to the right
+%        (numbered) case folders 
+%        *****
 
 % DOF Options: (at the time of writing this script)
 % 	FlapDOF1 
@@ -46,7 +50,7 @@
 % Nikhar Abbas - February 2019
 
 %% Some Initialization Housekeeping
-LinFolder = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Linearizations/Fl_PitchSurge';
+LinFolder = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Linearizations/';
 BaseFile = 'DTU_10MW_NAUTILUS_GoM';
 
 % Number of cases
@@ -116,7 +120,7 @@ end
 for ci = 1:cnum
     
     % Setup file names paths
-    cpath = ['Case', num2str(ci)];
+    cpath = ['Case', num2str(ci),'_PitSur'];
     elastofile = [LinFolder filesep cpath filesep BaseFile '_ElastoDyn.dat'];
     servofile = [LinFolder filesep cpath filesep BaseFile '_ServoDyn.dat'];
     modfile = [LinFolder filesep cpath filesep BaseFile '.fst'];

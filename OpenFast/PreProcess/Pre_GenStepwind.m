@@ -4,14 +4,12 @@
 
 
 %% Define Inputs
-filename = 'NoShr_5-8_Inc.5_50s.wnd';
-windspeeds = [5:.5:8];
+outdir = '/Users/nabbas/Documents/TurbineModels/WindFiles/StepWind';
+filename = 'NoShr_9-14_Inc1_50s.wnd';
+windspeeds = [9:14];
 tstep = 50;
-outdir = pwd;
 
 
 % Generate wind
-Pre_GenStepWind([outdir filesep filename],tstep,windspeeds)
+Pre_GenStepWindFile([outdir filesep filename],tstep,windspeeds)
 
-%%
-pwd

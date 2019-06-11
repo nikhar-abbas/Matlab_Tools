@@ -30,8 +30,23 @@ VS_SySp    = VS_RtGnSp/ (1.0 +  0.01*VS_SlPc);
 VS_Slope15 = (VS_Rgn2K*VS_Rgn2Sp*VS_Rgn2Sp)/(VS_Rgn2Sp - VS_CtInSp);
 VS_Slope25 = (VS_RtPwr/PC_RefSpd)/(VS_RtGnSp - VS_SySp);
 VS_TrGnSp = ( VS_Slope25 - sqrt(VS_Slope25*(VS_Slope25 - 4.0*VS_Rgn2K*VS_SySp)))/(2.0*VS_Rgn2K);
+
+%% BAR
+VS_RtGnSp 	  = 	64.1862;            % rad/s
+VS_RtPwr      = 	5000000;           % W
+PC_RefSpd     =     64.1862;           % rpm        
+VS_CtInSp     =     100 * pi/30;             % rpm
+VS_Rgn2Sp     =     150*pi/30;             % rpm
+VS_Rgn2K      =     17.4859;              % N-m/(rpm)^2
+VS_SlPc       =     15;
+
+VS_SySp    = VS_RtGnSp/ (1.0 +  0.01*VS_SlPc);
+VS_Slope15 = (VS_Rgn2K*VS_Rgn2Sp*VS_Rgn2Sp)/(VS_Rgn2Sp - VS_CtInSp);
+VS_Slope25 = (VS_RtPwr/PC_RefSpd)/(VS_RtGnSp - VS_SySp);
+VS_TrGnSp = ( VS_Slope25 - sqrt(VS_Slope25*(VS_Slope25 - 4.0*VS_Rgn2K*VS_SySp)))/(2.0*VS_Rgn2K);
+
 %%
-Om = 0:.1:150;
+Om = 0:.1:100;
 
 % for i = 1:length(Om)
 %     if Om(i) < Om_ci

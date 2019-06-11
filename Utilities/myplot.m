@@ -1,5 +1,7 @@
 function [fig,p,ax] = myplot(y, varargin)
-% This plots a figure using personal plot settings. 
+% This plots a figure using some personal plot settings. The inputs are identical to MATLAB's plot function.
+%
+% Nikhar Abbas
 
 
 %% create figure, get properties

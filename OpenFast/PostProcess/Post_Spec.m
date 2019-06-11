@@ -1,17 +1,13 @@
 % Spectral analysis
 
-fastout = Post_LoadFastOut('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Baseline/DTU_10MW_NAUTILUS_GoM.out')
+% fastout = Post_LoadFastOut('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Baseline/DTU_10MW_NAUTILUS_GoM.out')
 % 
 
 % data = simout;
-signal = fo_sim;
-channel = 'GenTq';
-% x = data.Wave1Elev;
+signal = simout;
+channel = 'RootFyb1';
 x = signal.(channel)(end/2:end);
-% % x = data.TTDspFA;
-% x = data.PtfmPitch; %(1001:end);
-% x = data.GenSpeed;
-% x = p2.data;
+
 
 fs = 1/(signal.Time(2) - signal.Time(1));
 % fs = 80;
@@ -30,7 +26,7 @@ freqN = 0:(2*pi)/N:pi;
 
 figure(1000);
 % plot(freq,10*log10(psd))
-loglog(freq,10*log10(psd))
+semilogx(freq,10*log10(psd))
 % plot(freqN/pi,10*log10(psdN))
 hold on
 xlabel('Frequency (Hz)')

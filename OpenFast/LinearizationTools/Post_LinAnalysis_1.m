@@ -155,14 +155,16 @@ for ind = 1:nlin
 %     A_MBC(:,m_chstates_bl) = A_MBC(:,m_chstates_bl).* bllength;             % times bllength to keep system behavior
 %     B_MBC(m_chstates_bl,:) = B_MBC(m_chstates_bl,:).* bllength;    
     
-    % Remove unnecessary states and inputs
+    % Remove uncontrollable states and unnecessary inputs
     gen_st = contains(linout(ind).x_desc,'ED Variable speed generator DOF');
+    gen_st = gen_st + contains(linout(ind).x_desc,'ED Platform horizontal surge translation DOF');
     genstates = find(gen_st == 1)';                                % remove ED Variable speed generator DOF
     if isempty(genstates) 
         rmstates = [];
     else
-        rmstates = [genstates(1)];    
+        rmstates = [genstates];    
     end
+%     rmstates = [4 1];
     rminputs = [1:7];                                         % 1-7 = All inputs besides GenTq and ColBldPitch
     A_MBC(rmstates,:) = []; A_MBC(:,rmstates) = [];
     B_MBC(rmstates,:) = []; 

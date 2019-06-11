@@ -4,6 +4,8 @@
 # Re-Generated Files that are silly to push #
 .DS_Store
 .DS_Store?
+
+# Avoid cache files
 .m~
 
 

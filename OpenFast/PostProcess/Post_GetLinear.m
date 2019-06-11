@@ -138,7 +138,7 @@ for ind = 1:nlin
     
 
 % Remove unnecessary/unstable states and inputs                    -- nja: this might be desired for some post-processing/analysis
-    gen_st = contains(linout(ind).x_desc,'ED Variable speed generator DOF');
+    gen_st = contains(linout(ind).x_desc,'Variable speed generator DOF');
     genstates = find(gen_st == 1)';                                % remove ED Variable speed generator DOF
     if isempty(genstates) 
         rmstates = [];
@@ -156,7 +156,7 @@ for ind = 1:nlin
     linout(ind).x_desc_rm(rmstates) = [];
     linout(ind).u_desc_rm = linout(ind).u_desc;
     linout(ind).u_desc_rm(rminputs) = [];
-     
+   
     
 %% Save states matrices
 if ~exist('rmstates'), rmstates = []; end

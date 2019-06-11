@@ -20,7 +20,7 @@ cnum = 7;
 
 % Load cases
 for cind = 1:cnum
-    cdir = ['Case' num2str(cind)];
+    cdir = ['Case' num2str(cind) '_PitSur'];
     [linout, linavg] = Post_LinAnalysis_1([Lindir, cdir], OutfileBase, nlin);
     
     lindata(cind).linout = linout;
@@ -52,11 +52,11 @@ for cind = 1:cnum
 %     contmat = eye(size(lindata(cind).lin
 end
 
-zrws = find(sum(contmat')' ~= 0);
+nzero = find(sum(contmat')' ~= 0);
 
-contmat = contmat(zrws,:);
-contmat_E = contmat_E(zrws,:);
-SS_desc_f = SS_desc(zrws);
+contmat = contmat(nzero,:);
+contmat_E = contmat_E(nzero,:);
+SS_desc_f = SS_desc(nzero);
 
 
 %% Make your fancy plots
@@ -197,7 +197,7 @@ FS_desc = {'ED Platform horizontal surge translation DOF (internal DOF index = D
 
 % shorten states descriptions
 % ***** Note - this needs to be the same script as is in Post_LinAnalysis_1,
-% otherwise you might break things
+%              otherwise you might break things
 
 sts = FS_desc;
 for j = 1:length(sts)

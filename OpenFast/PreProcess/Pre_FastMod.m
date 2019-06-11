@@ -63,8 +63,7 @@ for li = 1:length(A)
         fprintf(fid, '%s\n', A{li});
     end
 end
-
-
+fclose(fid);
 
 
 end

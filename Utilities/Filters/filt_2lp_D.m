@@ -1,7 +1,7 @@
 function [b,a] = filt_2lp_D(om,zeta, dt)
 %%
-% This function describes the discrete time transfer function for a first
-% order low pass filter of the form: H(s) = om/(s+om)
+% This function describes the discrete time transfer function for a second
+% order low pass filter of the form: H(s) = om^2/(s^2 + 2*zeta*om*s + om^2)
 %
 % Inputs: om - cutoff frequency
 %         zeta - damping constant

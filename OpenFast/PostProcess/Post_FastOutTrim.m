@@ -25,7 +25,9 @@ if isempty(t0_ind) || isempty(t1_ind)
 end
 
 for f_ind = 1:length(fields)
+    if isnumeric(fastout.(fields{f_ind}))
         fastout.(fields{f_ind}) = fastout.(fields{f_ind})(t0_ind:t1_ind);
+    end
 end
 
 fastout.Time = fastout.Time - t0;

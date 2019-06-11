@@ -51,4 +51,5 @@ for i = 1:length(headers)
     end
 end
 
+fclose(fid);
 end

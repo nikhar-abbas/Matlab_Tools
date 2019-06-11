@@ -1,45 +1,70 @@
-% some svd figure things out stuff
+%% SVD_MessAround
+% Just a script to explore the SVD in a simplified, two DOF model.
 
-At =[1, 3; 3 10];
+a1 = 0;
 
-[u,s,v] = svd(At)
+% svd_an(a1)
+% f = gcf;
+% h = uicontrol('Parent',f,'Style','slider','Position',[400,0,400,40],...
+%               'value',a1, 'min',0, 'max',1);
 
+h.Callback = @(es,ed) svdanal(es.Value);
 
-I = eye(2);
+%%
+% function svd_an(a1)
+%% State Space
+% a2 = 0;
+% a2 = get(hObject,'value')
+A = [-1 a1; ...
+     0 -1]
+B = [1 0; ...
+     0 1]
+C = [1 0; 0 1];
+D = zeros(2,2);
 
-vi = v'*I;
-svi = s*vi;
-usvi = u*svi;
-AI = At*I
-% lets look at some some plots
-figure(1), 
-plot([0 I(1,1)], [0 I(2,1)], 'b'), hold on
-plot([0 I(1,2)], [0 I(2,2)], 'b:')
-grid on
-
-plot([0 vi(1,1)], [0 vi(2,1)], 'r'), hold on
-plot([0 vi(1,2)], [0 vi(2,2)], 'r:'), 
-
-plot([0 svi(1,1)], [0 svi(2,1)], 'g'), hold on
-plot([0 svi(1,2)], [0 svi(2,2)], 'g:'), 
- 
-plot([0 usvi(1,1)], [0 usvi(2,1)], 'y'), hold on
-plot([0 usvi(1,2)], [0 usvi(2,2)], 'y:'), 
-   
-plot([0 AI(1,1)], [0 AI(2,1)], 'k--'), hold on
-plot([0 AI(1,2)], [0 AI(2,2)], 'k:'), 
+sys = ss(A,B,C,D);
 
 
-%% First singular values and a vector
-x = [1; 0];
+%% Controllability Gramian, and SVD
 
-vx = v'*x;
-svx = s*vx;
-usvx = u*svx;
-Ax = At*x;
-figure(2)
-plot([0 x(1)],[0 x(2)],'b'), hold on, grid on
-plot([0 vx(1)],[0 vx(2)], 'r')
-plot([0 svx(1)],[0 svx(2)],'g')
-plot([0 usvx(1)],[0 usvx(2)],'y')
-plot([0 Ax(1)],[0 Ax(2)], 'k--')
+Wc = gram(sys,'c');
+[U,S,V] = svd(Wc);
+
+%% Controllable Directions and Energy
+% Directions
+v1 = abs(V(:,1));
+v2 = abs(V(:,2));
+
+% SVD Energy
+E = V'/Wc*V;
+Esvd = diag(E);
+v1E = v1.*Esvd(1);
+v2E = v2.*Esvd(2);
+
+% Singular State Energy
+xm = eye(2);
+E = xm'/Wc*xm;
+Ess = diag(E);
+
+
+
+
+%% Some plots
+f = figure(10);
+set(gca,'ColorOrderIndex',1);
+myplot([0 v1(1)],[0 v1(2)]); hold on
+myplot([0 v2(1)],[0 v2(2)]);
+% myplot([
+set(gca,'ColorOrderIndex',1);
+myplot([0 v1E(1)],[0 v1E(2)],'--');
+myplot([0 v2E(1)],[0 v2E(2)],'--');
+
+myplot(Ess(1),Ess(2),'o'); set(gca,'ColorOrderIndex',3);
+myplot(Ess(1),Ess(2),'o','markersize',12); set(gca,'ColorOrderIndex',3);
+myplot(Ess(1),Ess(2),'o','markersize',18);
+
+title({'Controllable Directions (solid)';...
+'Energy to move "one" unit in that direction (dashed)'})
+
+hold off
+end

@@ -1,7 +1,7 @@
 %% SVD_MessAround
 % Just a script to explore the SVD in a simplified, two DOF model.
 
-theta = 45;
+theta = 0.1;
 
 % Make a fancy dynamic plot
 [Wc, U,S,V, E, Ex] = svd_an(theta)
@@ -42,44 +42,52 @@ sys = ss(A,B,C,D);
 
 %% Controllability Gramian, and SVD
 Wc = gram(sys,'c');
-[U,S,V] = svd(Wc)
+[U,S,V] = svd(Wc);
 
 %% Controllable Directions and Energy
 % Directions
-v1 = V(:,1);
-v2 = V(:,3);
+vi = find(abs(V(1,:)) > 0);
+if length(vi) > 1
+    v2i = vi(2);
+else
+    v2i = vi(1);
+end
+v1 = abs(V(:,1));
+v2 = abs(V(:,v2i));
 
 % SVD Energy
 E = V'/Wc*V;
 Esvd = diag(E);
-% v1E = v1.*Esvd(1);
-% v2E = v2.*Esvd(2);
-v1E = v1'/Wc*v1
-v2E = v2'/Wc*v2
+v1E = v1.*Esvd(1);
+v2E = v2.*Esvd(2);
+% v1E = v1'/Wc*v1
+% v2E = v2'/Wc*v2
 % Singular State Energy
 xm = eye(4);
 Ex = xm'/Wc*xm;
-Ess = diag(Ex)
+Ess = diag(Ex);
 
-
+% Singular Values
+sigma = diag(S);
 
 
 %% Some plots
 f = figure(10);
+% subplot(2,1,1)
 set(gca,'ColorOrderIndex',1);
-myplot([0 v1(1)],[0 v1(3)]); hold on
-% myplot([0 v2(1)],[0 v2(2)]);
-% myplot([
-set(gca,'ColorOrderIndex',1);
-% myplot([0 v1E(1)],[0 v1E(3)],'--');
-% myplot([0 v2E(1)],[0 v2E(2)],'--');
-% 
-% myplot(Ess(1),Ess(3),'o'); set(gca,'ColorOrderIndex',3);
+myplot([0 v1(1)*sigma(1)],[0 v1(3)*sigma(1)]); hold on
+myplot([0 v2(1)*sigma(v2i)],[0 v2(3)*sigma(v2i)]);
+% subplot(2,1,2)
+% % set(gca,'ColorOrderIndex',1);
+% % myplot([0 v1E(1)],[0 v1E(3)],'--');, hold on
+% % myplot([0 v2E(1)],[0 v2E(2)],'--');
+% % 
+% myplot(Ess(1),Ess(3),'o'); set(gca,'ColorOrderIndex',3);, hold on
 % myplot(Ess(1),Ess(3),'o','markersize',12); set(gca,'ColorOrderIndex',3);
 % myplot(Ess(1),Ess(3),'o','markersize',18);
 
-title({'Controllable Directions (solid)';...
-'Energy to move "one" unit in that direction (dashed)'})
+title({'Controllable Directions (solid)'});...
+% 'Energy to move "one" unit in that direction (dashed)'})
 
 % hold off
 end

@@ -80,8 +80,11 @@ CpTSR = zeros(1,length(TSRvec));
 for TSRi = 1:length(TSRvec)
     CpTSR(TSRi) = interp1(Betavec, Cpmat(TSRi,:), beta(ti)); % Vector of Cp values corresponding to operational beta
 end
-% Cp = interp1(TSRvec, CpTSR, TSRe) 
-Cp = simout.RtAeroCp(ti);
+Cp = interp1(TSRvec, CpTSR, TSRe) ;
+Cp = max(0,Cp);
+Cpvec(ti) = Cp;
+% Cp = 0.482 * (TSRe/7.82)^3;
+% Cp = simout.RtAeroCp(ti);
 % Calculate Jacobians
 F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_r, v_m, v_t);
 
@@ -194,8 +197,8 @@ a = pi*v_m/(2*L);
 
 % state
 omd = 1/J * (tau_r - Ng*tau_g);
-vtd = -a*v_t;% + nv(1);
-vmd = 0; nv(2);
+vtd = -a*v_t;
+vmd = 0;
 
 xhd = [omd vtd vmd]';
 

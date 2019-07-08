@@ -51,7 +51,7 @@ dt = simout.Time(2) - simout.Time(1);
 
 %% The filter
 % Initial Conditions
-L = 300;
+L = 100;
 P = diag([0.1, 0.1, 1])^2;
 % H = [1 0 0; 0 1 1];
 H = [1 0 0];
@@ -71,7 +71,7 @@ for ti = 1:length(T)
 
 % Find current estimated operating conditions, and saturate
 v_r = v_t + v_m;
-v_r = max( min(v_r, vv(end)), vv(1));
+% v_r = max( min(v_r, vv(end)), vv(1));
 TSRe = om_r*Rr/v_r; 
 TSRe = max( min(TSRe, TSRvec(end)), TSRvec(1));
 
@@ -86,7 +86,7 @@ Cpvec(ti) = Cp;
 % Cp = 0.482 * (TSRe/7.82)^3;
 % Cp = simout.RtAeroCp(ti);
 % Calculate Jacobians
-F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_r, v_m, v_t);
+F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_r, v_m, v_t, L);
 
 
 
@@ -100,7 +100,7 @@ Q = diag([1e-5, V11, V22]);
 
 
 %Prediction Update
-dxh = state_f(ContParam, tau_g(ti), Cp, v_m, v_r, v_t, om_r, nv);
+dxh = state_f(ContParam, tau_g(ti), Cp, v_m, v_r, v_t, om_r, nv, L);
 xh = xh + dt*dxh;
 % P = F*P*F' + Q; % EKF
 P = F*P + P*F' + Q; 
@@ -115,9 +115,9 @@ end
 S = H*P*H' + R;
 K = P*H'/S;
 xh = xh + K*y_til;
-% P = (eye(3) - K*H)*P; %EKF
+P = (eye(3) - K*H)*P; %EKF
 % P = P - K*S*K';
-P = (eye(3) - K*H)*P*(eye(3) - K*H)' + K*R*K'; 
+% P = (eye(3) - K*H)*P*(eye(3) - K*H)' + K*R*K'; 
 
 
 
@@ -136,7 +136,7 @@ end
 
 
 %% 
-function F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_e, v_m, v_t)
+function F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_e, v_m, v_t, L)
 % This finds the jacobian matrix used in the EKF for Wind Speed Estimation
 % -This could (should) be made a function that is F(v,omega,beta) without
 % the need to keep loading Cp Surface 
@@ -158,7 +158,7 @@ rho = ContParam.rho;                % Air density
 R = ContParam.RotorRad;             % Rotor Radius, R
 A = pi*R^2;                         % Rotor Swept Area, m^2
 % Slow filter "length"
-L = 300;
+% L = 300;
 
 % F = [interp1(vv, A_v, v_e), 1/(2*J)*rho*A*Cp*3*v_t^2*1/om_r, 1/(2*J)*rho*A*Cp*3*v_m^2*1/om_r;...
 F = [-.08, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r;...   
@@ -171,7 +171,7 @@ F = [-.08, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2
 end
 
 %%
-function [xhd, tau_r] = state_f(ContParam, tau_g, Cp, v_m, v_r, v_t, om_r, nv)
+function [xhd, tau_r] = state_f(ContParam, tau_g, Cp, v_m, v_r, v_t, om_r, nv, L)
 % Updated the state estimate
 % - This needs more commenting
 % Nikhar Abbas
@@ -183,7 +183,7 @@ R = ContParam.RotorRad;             % Rotor Radius, R
 A = pi*R^2;                         % Rotor Swept Area, m^2
 Ng = ContParam.GBRatio;             % Gearbox Ratio
 % Slow filter "length"
-L = 300;
+% L = 300;
 
 tsr = om_r*ContParam.RotorRad/v_r;
 

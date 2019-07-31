@@ -1,9 +1,12 @@
-%% Simplified plant model mess-around
+Run%% Simplified plant model mess-around
 
 %% Lets load some linearization data
 % Linearizatin data 
-Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/AboveRated/Case1';
-LinfileBase = 'DTU_10MW_RWT';
+% Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Linearizations/AboveRated/Case1';
+% LinfileBase = 'DTU_10MW_RWT';
+
+Lindir = '/Users/nabbas/Documents/TurbineModels/NREL_5MW/5MW_Land/Linearization/';
+LinfileBase = '5MW_Land';
 nlin = 24;
 [linout, linavg] = Post_GetLinear(Lindir, LinfileBase, nlin);
 
@@ -11,16 +14,19 @@ nlin = 24;
 %% Plant Model
 Apl = linavg.A;
 Bpl_t = linavg.B(:,8); % Generator Torque as input
-Bpl_b = linavg.B(:,9); % Blade Pitch as input
+Bpl_b = linavg.B(:,9)*pi/180; % Blade Pitch as input
 
 % Cpl = linavg.C(20,:); % Rotor Speed as output (rpm)
 Cpl = linavg.C(25,:)*pi/30; % Generator Speed as output (rad/s)
-Ctsr = linavg.C(107,:); 
-Dpl = linavg.D(25,1);
+Ctsr = linavg.C(44,:); 
+Dpl = linavg.D(44,8);
 
 G = tf(ss(Apl,Bpl_t,Cpl,Dpl));
 G_b = tf(ss(Apl,Bpl_b,Cpl,Dpl));
 
+% 11.5 - step = -8.06e-4
+% 13 - step = -0.544
+% 20 - step = -0.0129
 %% Make a controller 
 % -- Parameters for DTU 10MW --
 Jr = 156348032.108;                  % Rotor Inertia (kg-m^2)

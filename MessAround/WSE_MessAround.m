@@ -9,17 +9,21 @@
 
 
 %% Load a turbine simulation for some data to work with
-load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Baseline/Outfiles_Simulink/11.4mps_turb.mat');  % loads simout structure
+% load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Baseline/Outfiles_Simulink/11.4mps_turb.mat');  % loads simout structure
 % load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/Baseline/Outfiles_Simulink/10mps_steady.mat');  % loads simout structure
-
+% simout = simtemp;
 % A Cp surface for this turbine
-cpscan = load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan/MatFiles/CpScan_FullSurf.mat');
+% cpscan = load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan/MatFiles/CpScan_FullSurf.mat');
+cpscan = load('/Users/nabbas/Documents/TurbineModels/NREL_5MW/CpScan/CpScan.mat');
 
 % And some linearization parameters
-addpath(genpath('/Users/nabbas/Documents/TurbineModels/TurbineControllers/SimulinkControllers/TSR_Tracking'))
-ContParam = Pre_ControlParameters_TSR;
+% addpath(genpath('/Users/nabbas/Documents/TurbineModels/TurbineControllers/SimulinkControllers/TSR_Tracking'))
+% addpath('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/DTU_10MW_Simulink')
+addpath(genpath('/Users/nabbas/Documents/TurbineModels/NREL_5MW/5MW_Land'));
+% ContParam = Pre_ContParam_TSR_DTU10MW;
+ContParam = Pre_ContParam_TSR_NREL5MW;
 [A_v,Bb,GS,Beta_op,vv] = Pre_TSRtracking_GS(ContParam,cpscan);
-
+ContParam.GS = GS;
 %% Define turbine parameters and that fun stuff
 J = ContParam.J;                    % Rotor Inertia, kg*m^2
 rho = ContParam.rho;                % Air Density, kg/m^3
@@ -30,7 +34,6 @@ A = pi*ContParam.RotorRad^2;        % Rotor Swept Area, m^2
 clear xh xhmat vh nv Vm1
 xhmat = [];
 vh = [];
-nv = 0;
 Vm1 = zeros(2,2);
 %% Load simulation output and Cp data
 T = simout.Time;                    % Time, s
@@ -53,11 +56,11 @@ dt = simout.Time(2) - simout.Time(1);
 % Initial Conditions
 L = 100;
 P = diag([0.1, 0.1, 1])^2;
-% H = [1 0 0; 0 1 1];
+K = zeros(3,1);
 H = [1 0 0];
 F = [om_m(1), 0, v_n(1)];
-v_m = v_n(1);
-v_t = 0;
+v_m = 11.4; v_n(1);
+v_t = 0.01;
 xh(:,1) = [om_m(1) v_t v_m]';
 om_r = om_m(1);
 
@@ -80,13 +83,12 @@ CpTSR = zeros(1,length(TSRvec));
 for TSRi = 1:length(TSRvec)
     CpTSR(TSRi) = interp1(Betavec, Cpmat(TSRi,:), beta(ti)); % Vector of Cp values corresponding to operational beta
 end
-Cp = interp1(TSRvec, CpTSR, TSRe) ;
+Cp = interp1(TSRvec, CpTSR, TSRe)
 Cp = max(0,Cp);
-Cpvec(ti) = Cp;
-% Cp = 0.482 * (TSRe/7.82)^3;
+
 % Cp = simout.RtAeroCp(ti);
 % Calculate Jacobians
-F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_r, v_m, v_t, L);
+F = WSE_Jacobian(ContParam, Cp, om_r, v_m, v_t, L);
 
 
 
@@ -95,15 +97,15 @@ F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_r, v_m, v_t, L);
 tui = 0.1;
 V11 = pi * v_m^3 * tui^2 / L;
 V = [V11 0; 0 V22];
-nv = nv + dt*V*randn(2,1);
-Q = diag([1e-5, V11, V22]);
+Q = diag([5e-5, V11, V22]);
 
 
 %Prediction Update
-dxh = state_f(ContParam, tau_g(ti), Cp, v_m, v_r, v_t, om_r, nv, L);
+dxh = state_f(ContParam, tau_g(ti), Cp, v_m, v_r, v_t, om_r, L);
 xh = xh + dt*dxh;
 % P = F*P*F' + Q; % EKF
-P = F*P + P*F' + Q; 
+dP = F*P + P*F' + Q - K*R*K';
+P = P + dt*dP;
 
 % Measurement Update
 % y_til = [om_m(ti); v_n(ti)] - [om_r; v_r]
@@ -112,15 +114,18 @@ y_tilmat(ti) = y_til;
 if isnan(y_til)
     break
 end
-S = H*P*H' + R;
-K = P*H'/S;
 xh = xh + K*y_til;
-P = (eye(3) - K*H)*P; %EKF
+
+S = H*P*H' + R;
+K = P*H'/R;
+% P = (eye(3) - K*H)*P; %EKF
 % P = P - K*S*K';
-% P = (eye(3) - K*H)*P*(eye(3) - K*H)' + K*R*K'; 
+P = (eye(3) - K*H)*P*(eye(3) - K*H)' + K*R*K'; 
 
 
-
+% if T < 20
+%     v_m = 8;
+% end
 % Define variables
 om_r = xh(1);
 v_t = xh(2);
@@ -136,7 +141,7 @@ end
 
 
 %% 
-function F = WSE_Jacobian(ContParam, A_v, vv, Cp, om_r, v_e, v_m, v_t, L)
+function F = WSE_Jacobian(ContParam, Cp, om_r, v_m, v_t, L)
 % This finds the jacobian matrix used in the EKF for Wind Speed Estimation
 % -This could (should) be made a function that is F(v,omega,beta) without
 % the need to keep loading Cp Surface 
@@ -157,11 +162,13 @@ J = ContParam.J;                    % Rotor Inertia
 rho = ContParam.rho;                % Air density
 R = ContParam.RotorRad;             % Rotor Radius, R
 A = pi*R^2;                         % Rotor Swept Area, m^2
+pA = ContParam.GS.pA;
+
 % Slow filter "length"
 % L = 300;
 
-% F = [interp1(vv, A_v, v_e), 1/(2*J)*rho*A*Cp*3*v_t^2*1/om_r, 1/(2*J)*rho*A*Cp*3*v_m^2*1/om_r;...
-F = [-.08, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r;...   
+% F = [-0.08, 1/(2*J)*rho*A*Cp*3*v_t^2*1/om_r, 1/(2*J)*rho*A*Cp*3*v_m^2*1/om_r;...
+F = [pA(1)*(v_m+v_t) + pA(2), 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r;...   
     0, pi*v_m/(2*L), pi*v_t/(2*L);...
     0, 0, 0];
     
@@ -171,7 +178,7 @@ F = [-.08, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2*1/om_r, 1/(2*J)*rho*A*Cp*3*(v_m+v_t)^2
 end
 
 %%
-function [xhd, tau_r] = state_f(ContParam, tau_g, Cp, v_m, v_r, v_t, om_r, nv, L)
+function [xhd, tau_r] = state_f(ContParam, tau_g, Cp, v_m, v_r, v_t, om_r, L)
 % Updated the state estimate
 % - This needs more commenting
 % Nikhar Abbas

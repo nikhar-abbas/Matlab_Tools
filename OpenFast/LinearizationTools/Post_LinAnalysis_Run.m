@@ -15,6 +15,8 @@ savedir = '/Users/nabbas/Documents/Notes/ResearchNotes/Figures/';
 % OutfileBase = 'DTU_10MW_RWT';
 Lindir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT_NAUTILUS_GoM_FAST_v1.00/Linearizations/';
 OutfileBase = 'DTU_10MW_NAUTILUS_GoM';
+
+LinDir = '/Users/nabbas/Documents/TurbineModels/NREL_5MW/5MW_Land/Linearization/5MW_Land.out'
 nlin = 24;
 cnum = 7;
 

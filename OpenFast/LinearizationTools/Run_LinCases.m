@@ -166,7 +166,11 @@ end
         
         
         
-        
+%% Find Op Point
+sig = 'PtfmYaw'
+
+op = (max(simout.(sig)(3*end/4:end))+min(simout.(sig)(3*end/4:end)))/2
+
         
         
         

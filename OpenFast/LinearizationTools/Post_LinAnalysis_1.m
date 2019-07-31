@@ -131,7 +131,13 @@ for ind = 1:nlin
 %     bld_u = contains(linout(ind).u_desc,', m') + contains(linout(ind).u_desc,'tower');
 %     bld_chu = find(bld_u == 2)';
 %     M_u(bld_chu) = M_u(bld_chu)/bldlength;   
-    
+
+    % Scale platform pitching
+    twrheight = 115.63;
+    twr_st = contains(linout(ind).x_desc,'Platform');
+    twr_chstates = find(twr_st == 1)';
+    M_x(twr_chstates) = M_x(twr_chstates)*10;    
+
     M_u = diag(M_u);
 
 % Apply transformation matrices
@@ -156,16 +162,17 @@ for ind = 1:nlin
 %     B_MBC(m_chstates_bl,:) = B_MBC(m_chstates_bl,:).* bllength;    
     
     % Remove uncontrollable states and unnecessary inputs
-    gen_st = contains(linout(ind).x_desc,'ED Variable speed generator DOF');
-    gen_st = gen_st + contains(linout(ind).x_desc,'ED Platform horizontal surge translation DOF');
+    gen_st = contains(linout(ind).x_desc,'Variable speed generator DOF');
+    gen_st = gen_st + contains(linout(ind).x_desc,'Platform yaw rotation DOF');
+    gen_st = gen_st + contains(linout(ind).x_desc,'translation DOF');    
     genstates = find(gen_st == 1)';                                % remove ED Variable speed generator DOF
     if isempty(genstates) 
         rmstates = [];
     else
         rmstates = [genstates];    
     end
-%     rmstates = [4 1];
     rminputs = [1:7];                                         % 1-7 = All inputs besides GenTq and ColBldPitch
+%     rminputs =[1:3, 7,9];
     A_MBC(rmstates,:) = []; A_MBC(:,rmstates) = [];
     B_MBC(rmstates,:) = []; 
     B_MBC(:,rminputs) = [];

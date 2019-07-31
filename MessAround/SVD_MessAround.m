@@ -1,7 +1,7 @@
 %% SVD_MessAround
 % Just a script to explore the SVD in a simplified, two DOF model.
 
-theta = 88;
+theta = 0;
 pl = 2;  % plot?
 t = .001;
 % Do some analysis, make a plot?
@@ -51,14 +51,14 @@ function [Wc, U,S,V, A, E, Ex] = svd_an(theta,t, pl)
 m = 10;
 % theta = 45;
 theta
-k1 = 4;
+k1 = 5;
 k2 = k1;
-b1 = 4;
-b2 = b1;
+c1 = 2;
+c2 = c1;
 A = [0 1 0 0;...
-    -k1/m -b1/m 0 0;...
+    -k1/m -c1/m 0 0;...
     0 0 0 1;...
-    0 0 -k2/m -b2/m];
+    0 0 -k2/m -c2/m];
 B = [0 0;...
     1/m sind(theta)/m;...
     0 0;...

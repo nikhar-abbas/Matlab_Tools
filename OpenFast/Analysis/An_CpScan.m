@@ -35,26 +35,32 @@
 % Nikhar Abbas - February 2019
 
 %% Model Directory and Filenames
-% ModDir = '/Users/nabbas/Documents/TurbineModels/NREL_5MW/CpScan';
-ModDir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan';
+ModDir = '/Users/nabbas/Documents/TurbineModels/NREL_5MW/CpScan';
+% ModDir = '/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan';
 
 % Important Parameter Files (In relation to ModDir)
-Servo = 'DTU_10MW_ServoDyn.dat';
-Elasto = 'DTU_10MW_RWT_ElastoDyn.dat';
-Inflow = 'DTU_10MW_InflowWind.dat';
-Aero = 'DTU_10MW_RWT_AeroDyn15.dat';
-Init = 'DTU_10MW_RWT.fst';
-Out = 'DTU_10MW_RWT.out';
+Servo = 'NRELBsline5MW_Onshore_ServoDyn.dat';
+Elasto = 'NRELBsline5MW_Onshore_ElastoDyn.dat';
+Inflow = 'NRELOffshrBsline5MW_InflowWind.dat';
+Aero = 'NRELBsline5MW_Onshore_AeroDyn15.dat';
+Init = '5MW_Land_CpScan.fst';
+Out = '5MW_Land_CpScan.out';
+
+% Servo = 'DTU_10MW_ServoDyn.dat';
+% Elasto = 'DTU_10MW_RWT_ElastoDyn.dat';
+% Inflow = 'DTU_10MW_InflowWind.dat';
+% Aero = 'DTU_10MW_RWT_AeroDyn15.dat';
+% Init = 'DTU_10MW_RWT.fst';
+% Out = 'DTU_10MW_RWT.out';
 
 
 
 %% Simulation setup
-BlPitch = [-2:.5:60];                        % blade pitch angles
-R = 89.1500*cos(2.5*pi/180);                 % rotor radius (m)
-lambda = 1:.25:25;                           % tip speed ratios
+BlPitch = [-2:.25:30];                        % blade pitch angles
+R = 63*cos(2.5*pi/180);                 % rotor radius (m)
+lambda = 1:.25:20;                           % tip speed ratios
 v = 10;                                      % wind speed (m/s)
 omega = (lambda*v/R) * (30/pi);              % Rotor speeds (rpm)
-
 
 Pre_FastMod([ModDir filesep Inflow],{'HWindSpeed'},{v})
 

@@ -46,7 +46,7 @@ VS_Slope25 = (VS_RtPwr/PC_RefSpd)/(VS_RtGnSp - VS_SySp);
 VS_TrGnSp = ( VS_Slope25 - sqrt(VS_Slope25*(VS_Slope25 - 4.0*VS_Rgn2K*VS_SySp)))/(2.0*VS_Rgn2K);
 
 %%
-Om = 0:.1:100;
+Om = 50:.1:PC_RefSpd+25;
 
 % for i = 1:length(Om)
 %     if Om(i) < Om_ci
@@ -74,7 +74,7 @@ end
  
 %% Plotting
 close all
-fig = myplot(Om,GenTrq);
+fig = plot(Om,GenTrq);
 % fig = AIAA_pplot(Om*30/pi,GenTrq./1000); hold on
 % fig = AIAA_pplot(Om*30/pi, VS_Rgn2K*Om.^2./1000,'k--');
 % Leg = legend('Variable Speed Controller','Optimal','location','northwest');

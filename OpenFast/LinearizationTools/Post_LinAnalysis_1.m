@@ -162,17 +162,18 @@ for ind = 1:nlin
 %     B_MBC(m_chstates_bl,:) = B_MBC(m_chstates_bl,:).* bllength;    
     
     % Remove uncontrollable states and unnecessary inputs
-    gen_st = contains(linout(ind).x_desc,'Variable speed generator DOF');
+    gen_st = contains(linout(ind).x_desc,'ED Variable speed generator DOF');
     gen_st = gen_st + contains(linout(ind).x_desc,'Platform yaw rotation DOF');
     gen_st = gen_st + contains(linout(ind).x_desc,'translation DOF');    
+%     gen_st = gen_st + contains(linout(ind).x_desc,'blade');
     genstates = find(gen_st == 1)';                                % remove ED Variable speed generator DOF
     if isempty(genstates) 
         rmstates = [];
     else
         rmstates = [genstates];    
     end
-    rminputs = [1:7];                                         % 1-7 = All inputs besides GenTq and ColBldPitch
-%     rminputs =[1:3, 7,9];
+%     rminputs = [1:7];                                         % 1-7 = All inputs besides GenTq and ColBldPitch
+    rminputs =[1:3, 7,9];
     A_MBC(rmstates,:) = []; A_MBC(:,rmstates) = [];
     B_MBC(rmstates,:) = []; 
     B_MBC(:,rminputs) = [];
